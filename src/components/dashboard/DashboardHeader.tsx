@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   BellIcon, 
   MagnifyingGlassIcon, 
@@ -8,6 +9,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 const DashboardHeader = () => {
+  const { user, signOut } = useAuth();
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="px-6 py-4">
@@ -50,10 +53,31 @@ const DashboardHeader = () => {
             </button>
 
             {/* Profile */}
-            <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-gray-900 transition-colors">
-              <UserCircleIcon className="h-8 w-8" />
-              <span className="font-medium">John Doe</span>
-            </button>
+            <div className="relative group">
+              <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-gray-900 transition-colors">
+                <UserCircleIcon className="h-8 w-8" />
+                <span className="font-medium">{user?.user_metadata?.full_name || user?.email || 'User'}</span>
+              </button>
+              
+              {/* Dropdown Menu */}
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="py-2">
+                  <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Profile Settings
+                  </Link>
+                  <Link to="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Account
+                  </Link>
+                  <hr className="my-2" />
+                  <button 
+                    onClick={signOut}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

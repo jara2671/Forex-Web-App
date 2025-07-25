@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import AdvancedChart from '../charts/AdvancedChart';
 
 const TradingChart = () => {
   const [selectedAsset, setSelectedAsset] = useState('AAPL');
   const [orderType, setOrderType] = useState('buy');
   const [amount, setAmount] = useState('');
-
-  const chartData = [
-    { time: '09:00', price: 170.50 },
-    { time: '10:00', price: 172.30 },
-    { time: '11:00', price: 171.80 },
-    { time: '12:00', price: 174.20 },
-    { time: '13:00', price: 175.10 },
-    { time: '14:00', price: 173.90 },
-    { time: '15:00', price: 175.43 },
-  ];
+  const [timeframe, setTimeframe] = useState('1D');
+  const [chartType, setChartType] = useState<'line' | 'area' | 'candlestick'>('line');
 
   const assets = [
     { symbol: 'AAPL', name: 'Apple Inc.', price: 175.43, change: '+2.34%' },
@@ -55,35 +47,52 @@ const TradingChart = () => {
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900">{selectedAsset} Price Chart</h3>
-            <div className="flex gap-2">
-              {['1D', '1W', '1M', '3M', '1Y'].map((period) => (
-                <button
-                  key={period}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50"
-                >
-                  {period}
-                </button>
-              ))}
+            <div className="flex items-center gap-4">
+              {/* Chart Type Selector */}
+              <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+                {[
+                  { type: 'line' as const, label: 'Line' },
+                  { type: 'area' as const, label: 'Area' },
+                  { type: 'candlestick' as const, label: 'Candle' }
+                ].map((chart) => (
+                  <button
+                    key={chart.type}
+                    onClick={() => setChartType(chart.type)}
+                    className={`px-3 py-1 text-sm rounded transition-colors ${
+                      chartType === chart.type
+                        ? 'bg-etoro-green text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    {chart.label}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Timeframe Selector */}
+              <div className="flex gap-2">
+                {['1D', '1W', '1M', '3M', '1Y'].map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setTimeframe(period)}
+                    className={`px-3 py-1 text-sm border rounded transition-colors ${
+                      timeframe === period
+                        ? 'border-etoro-green bg-etoro-green text-white'
+                        : 'border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {period}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" />
-                <YAxis domain={['dataMin - 1', 'dataMax + 1']} />
-                <Tooltip />
-                <Line 
-                  type="monotone" 
-                  dataKey="price" 
-                  stroke="#00C896" 
-                  strokeWidth={2}
-                  dot={{ fill: '#00C896', strokeWidth: 2, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <AdvancedChart 
+            symbol={selectedAsset}
+            timeframe={timeframe}
+            chartType={chartType}
+          />
         </div>
 
         {/* Order Panel */}

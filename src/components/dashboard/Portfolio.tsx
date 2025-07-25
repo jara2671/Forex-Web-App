@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
+import PortfolioChart from '../charts/PortfolioChart';
 
 const Portfolio = () => {
   const holdings = [
@@ -15,6 +16,13 @@ const Portfolio = () => {
   const totalGainLoss = totalValue - totalCost;
   const totalGainLossPercent = ((totalGainLoss / totalCost) * 100);
 
+  const portfolioChartData = holdings.map((holding, index) => ({
+    name: holding.symbol,
+    value: holding.value,
+    color: [
+      '#00C896', '#1E3A8A', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'
+    ][index % 6]
+  }));
   return (
     <div className="space-y-6">
       {/* Portfolio Summary */}
@@ -40,6 +48,12 @@ const Portfolio = () => {
             <div className="text-sm text-gray-500">Return</div>
           </div>
         </div>
+      </div>
+
+      {/* Portfolio Allocation Chart */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">Portfolio Allocation</h3>
+        <PortfolioChart data={portfolioChartData} />
       </div>
 
       {/* Holdings */}
