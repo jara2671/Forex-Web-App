@@ -5,6 +5,7 @@
 +import RealTimeData from '../components/features/RealTimeData';
 
  const Dashboard = () => {
+ }
 @@ .. @@
              
              {/* Right Sidebar */}
